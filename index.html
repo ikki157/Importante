@@ -1,1 +1,51 @@
-# Importante
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Pedido Importante...</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <!-- Overlay inicial com botão para começar a experiência -->
+    <div id="startOverlay" class="start-overlay" role="dialog" aria-modal="true">
+        <button id="startButton" class="start-button">Clique aqui</button>
+    </div>
+
+
+    <div class="container" id="mainContainer">
+        <h1>Luma... Eu preciso te dizer umas coisas...</h1>
+        
+    <div id="subtitles" class="subtitles" aria-live="polite"></div>
+
+        <div id="buttons" class="buttons">
+            <button id="btnSim">SIM! 😍</button>
+            <button id="btnNao">Não 😕</button>
+        </div>
+
+    <div id="resultado" aria-live="polite"></div>
+    </div>
+
+    <audio id="musicaFundo" src="musica.mp3" autoplay loop muted>
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <!-- Áudio de perigo para a mensagem 'APAGANDO DADOS' -->
+    <audio id="perigoAudio" src="perigo.mp3" preload="auto"></audio>
+
+    <!-- Áudio de fogos para o botão SIM -->
+    <audio id="fogosAudio" src="fogos.mp3" preload="auto"></audio>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div id="deletingData" aria-live="assertive" role="status">
+        ⚠️ APAGANDO DADOS ⚠️
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
