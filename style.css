@@ -60,7 +60,7 @@ body {
 
 
 @keyframes enter{
-  from{ transform: translateY(12px) scale(.995); opacity:0 }
+  from{ transform: translateY(12px) scale(1); opacity:0 }
   to{ transform: translateY(0) scale(1); opacity:1 }
 }
 
@@ -75,7 +75,7 @@ h1{
 
 .subtitles{
     min-height: 56px;
-    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-size: clamp(1rem, 2.2vw, 2rem);
     color: var(--muted);
     margin: 16px 0;
     font-style: italic;
@@ -152,11 +152,53 @@ button{
   100%{ opacity:1 }
 }
 
+/* Efeito de piscar único usado antes de iniciar a contagem */
+.flash-once{
+    animation: flashOnce 360ms ease-in-out;
+}
+@keyframes flashOnce{
+    0% { opacity: 1 }
+    40% { opacity: 0 }
+    100% { opacity: 1 }
+}
+
+#deletingData .notice{
+    font-size: clamp(1rem, 2.4vw, 1.3rem);
+    color: #fff;
+    text-shadow: none;
+    background: rgba(0,0,0,0.6);
+    padding: 14px 18px;
+    border-radius: 10px;
+    display:inline-block;
+}
+
+#deletingData .countdown-num{
+    font-weight: 900;
+    margin-left: 8px;
+    color: #ffdede;
+}
+
+#deletingData .last-chance{
+    margin-top: 12px;
+    display:block;
+    background: linear-gradient(180deg,#4CAF50,#3BA043);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+#deletingData .last-chance:hover{ transform: translateY(-2px) }
+
+
 /* Focus and accessibility */
 button:focus{ outline: 3px solid rgba(233,30,99,0.15); outline-offset: 3px }
 
 @media (max-width:420px){
   .container{ padding:18px }
-  #deletingData{ font-size:1.6rem }
+  #deletingData{ font-size:2rem }
+  .subtitles{ font-size:2rem }
 }
 

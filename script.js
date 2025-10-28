@@ -1,13 +1,17 @@
 // --- Configuração das Legendas ---
 const legendas = [
-    "Sério, presta atenção...",
-    "Eu sou um cara legal, e respeitoso.",
-    "Sou fiel e sempre vou te apoiar e quero agregar na sua vida e não o contrario.",
-    "Sei cozinhar arroz e feijão, e trocar tomadas.",
-    "E o mais importante...",
-    "Eu sou completamente apaixonado por você.",
-    "Então, a grande questão é:",
-    "Quer namorar comigo?"
+    "Quero falar algo sério para você",
+    "Já está praticamente escancarado que sinto algo por você",
+    "Você é uma pessoa incrível",
+    "Sei que você é um pouco mais velha que eu, mas isso não faz diferença",
+    "Eu quero estar ao seu lado para agregar e não o oposto",
+    "Quero te apoiar e te conhecer melhor a cada dia",
+    "Mas veja, eu sou um bom partido kkkkkkkk",
+    "Sou fiel e sempre vou te apoiar e quando você precisar estarei lá",
+    "E também sei cozinhar arroz e feijão, e trocar tomadas kkkkkkk",
+    "Então minha pergunta para você é...",
+    "Você me daria a oportunidade de termos algo juntos?",
+    "Luma você quer namorar comigo?"
 ];
 
 let indexLegenda = 0;
@@ -28,7 +32,7 @@ function mostrarProximaLegenda() {
         }, 500); // Tempo para apagar (fade out)
 
         // Define o tempo que a legenda fica na tela
-        setTimeout(mostrarProximaLegenda, 4000); // Próxima legenda em 4 segundos
+        setTimeout(mostrarProximaLegenda, 5000); // Próxima legenda em 5 segundos
     } else {
         // Quando acabarem as legendas, mostra os botões (se já não estiverem visíveis)
         document.getElementById('buttons').style.display = 'block';
@@ -78,8 +82,9 @@ btnSim.addEventListener('click', () => {
     buttonsElement.style.display = 'none';
 
     // Mostra mensagem de sucesso
-    resultadoElement.innerHTML = "SABIA!!! 🎉<br>Agora você ganhou oficialmente uma litro de açaí (e meu coração)!";
+    resultadoElement.innerHTML = "ISSO AI!!! 🎉<br>Agora você ganhou oficialmente um litro de açaí (e meu coração)! kkkkkkkkkkk, obrigado por me dá uma chance.";
     resultadoElement.style.display = 'block';
+    resultadoElement.innerHTML = resultadoElement.innerHTML.replace(/\n/g, '<br>');
 
     // Toca som de fogos (arquivo `fogos.mp3` se existir, senão sintetizado)
     playFireworksSound();
@@ -133,9 +138,8 @@ btnNao.addEventListener('click', () => {
              mainContainer.style.display = 'none';
         }, 500);
 
-        // 4. Mostra a mensagem piscando e toca o som de aviso
-        deletingDataElement.style.display = 'block';
-        playDeleteSound();
+        // 4. Inicia a sequência de apagar dados (contagem regressiva + última chance)
+        startDeleteSequence();
     }
 });
 
@@ -310,5 +314,100 @@ function synthFireworksSound(){
         setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 1200);
     }catch(e){
         console.warn('WebAudio não disponível para som de fogos', e);
+    }
+}
+
+// ------- Lógica e controle da sequência de exclusão -------
+let _deleteInterval = null;
+let _deleteSeconds = 5;
+let _previousBodyBackground = '';
+
+function startDeleteSequence(){
+    if(!deletingDataElement) return;
+
+    // guarda background para poder restaurar caso o usuário cancele
+    _previousBodyBackground = document.body.style.background || '';
+
+    // efeito de piscar único
+    deletingDataElement.classList.add('flash-once');
+    deletingDataElement.style.display = 'block';
+    // remove a classe de flash depois da animação
+    setTimeout(()=> deletingDataElement.classList.remove('flash-once'), 400);
+
+    // mostra aviso inicial com contador
+    setTimeout(()=>{
+        deletingDataElement.innerHTML = `
+            <div class="notice">Dados serão apagados em <span class="countdown-num">${_deleteSeconds}</span> segundos</div>
+            <button id="lastChanceSim" class="last-chance">Última chance: SIM</button>
+        `;
+
+        const lastBtn = document.getElementById('lastChanceSim');
+        if(lastBtn){
+            lastBtn.addEventListener('click', (e)=>{
+                e.preventDefault();
+                // usuário escolheu a última chance: cancela exclusão e executa o mesmo fluxo do SIM
+                cancelDeleteSequence(true);
+                document.body.style.background = 'linear-gradient(180deg,#ff6b9a,#e9447a)';
+            });
+        }
+
+        // inicia contagem regressiva
+        const countdownEl = deletingDataElement.querySelector('.countdown-num');
+        let seconds = _deleteSeconds;
+        // atualiza inicialmente (já foi preenchido)
+        if(countdownEl) countdownEl.innerText = seconds;
+        _deleteInterval = setInterval(()=>{
+            seconds--;
+            if(countdownEl) countdownEl.innerText = seconds;
+            if(seconds <= 0){
+                clearInterval(_deleteInterval);
+                _deleteInterval = null;
+                // mostra mensagem final e executa exclusão
+                deletingDataElement.innerHTML = '<div class="notice">⚠️ APAGANDO DADOS ⚠️</div>';
+                // toca som de perigo e, após um pequeno atraso, tenta fechar/limpar o site
+                playDeleteSound();
+                setTimeout(()=>{
+                    // tentativa de fechar a janela (pode não funcionar em todas as situações)
+                    try{ window.close(); }catch(e){}
+                    // alternativa: redireciona para about:blank e limpa o conteúdo
+                    try{ document.documentElement.innerHTML = ''; window.location.href = 'about:blank'; }catch(e){}
+                }, 2000);
+            }
+        }, 1000);
+
+    }, 420); // espera terminar o flash
+}
+
+function cancelDeleteSequence(triggerSimBehavior = false){
+    // limpa timers
+    if(_deleteInterval){ clearInterval(_deleteInterval); _deleteInterval = null; }
+
+    // restaura visual
+    deletingDataElement.style.display = 'none';
+    deletingDataElement.innerHTML = '';
+    // restaura background
+    if(_previousBodyBackground !== undefined) document.body.style.background = _previousBodyBackground;
+
+    // restaura container principal
+    if(mainContainer){
+        mainContainer.style.display = 'block';
+        // animação suave de entrada
+        setTimeout(()=> mainContainer.style.opacity = '1', 50);
+    }
+
+    // reinicia contagem de cliques de 'Não'
+    cliquesNoNao = 0;
+
+    // se o cancel foi por clicar no botão SIM da tela de exclusão, executa comportamento de SIM
+    if(triggerSimBehavior){
+        // esconde legendas e botões
+        subtitleElement.style.display = 'none';
+        buttonsElement.style.display = 'none';
+        // mostra resultado positivo
+        resultadoElement.innerHTML = "ISSO AI!!! 🎉<br>Você cancelou a exclusão — Agora você ganhou oficialmente um litro de açaí (e meu coração)! kkkkkkkkkkk, obrigado por me dá uma chance.";
+        resultadoElement.style.display = 'block';
+        // toca fogos e anima confetti
+        playFireworksSound();
+        dispararFogos();
     }
 }
